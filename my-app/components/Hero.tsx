@@ -1,3 +1,4 @@
+"use client";
 export default function Hero() {
   const stats = [
     { num: "99.99%", label: "Uptime SLA" },
@@ -7,49 +8,90 @@ export default function Hero() {
   ];
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center text-center px-[5%] pt-28 pb-20 overflow-hidden bg-white dark:bg-[#000000]">
+    <section id="hero" style={{
+      position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column",
+      alignItems: "center", justifyContent: "center", textAlign: "center",
+      padding: "7rem 5% 5rem", overflow: "hidden", background: "#ffffff",
+    }}>
+      <style>{`
+        @keyframes heroPing { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(2);opacity:0.3} }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+      `}</style>
 
-      {/* Grid background */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.04)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(0,200,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,200,255,0.05)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none" />
+      {/* Subtle grid */}
+      <div style={{
+        position: "absolute", inset: 0, pointerEvents: "none",
+        backgroundImage: "linear-gradient(rgba(124,58,237,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,0.04) 1px,transparent 1px)",
+        backgroundSize: "60px 60px",
+      }} />
 
-      {/* Glow - dark only */}
-      <div className="hidden dark:block absolute w-[700px] h-[700px] rounded-full bg-[radial-gradient(circle,rgba(0,102,255,0.22)_0%,transparent_70%)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="hidden dark:block absolute w-[400px] h-[400px] rounded-full bg-[radial-gradient(circle,rgba(0,200,255,0.13)_0%,transparent_70%)] top-[30%] left-[60%] pointer-events-none" />
+      {/* Glow blobs */}
+      <div style={{
+        position: "absolute", width: 600, height: 600, borderRadius: "50%",
+        background: "radial-gradient(circle,rgba(168,85,247,0.12) 0%,transparent 70%)",
+        top: "10%", left: "50%", transform: "translateX(-50%)", pointerEvents: "none",
+      }} />
+      <div style={{
+        position: "absolute", width: 350, height: 350, borderRadius: "50%",
+        background: "radial-gradient(circle,rgba(124,58,237,0.08) 0%,transparent 70%)",
+        bottom: "10%", right: "10%", pointerEvents: "none",
+      }} />
 
       {/* Badge */}
-      <div className="relative flex items-center gap-2 bg-cyan-50 dark:bg-cyan-400/10 border border-cyan-200 dark:border-cyan-400/25 text-cyan-600 dark:text-cyan-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-8">
-        <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-ping" />
+      <div style={{
+        position: "relative", display: "inline-flex", alignItems: "center", gap: 8,
+        background: "rgba(124,58,237,0.07)", border: "1px solid rgba(124,58,237,0.2)",
+        color: "#7c3aed", padding: "6px 18px", borderRadius: 999,
+        fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 32,
+      }}>
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#a855f7", display: "inline-block", animation: "heroPing 1.8s ease-in-out infinite" }} />
         Enterprise-Grade Infrastructure
       </div>
 
-      <h1 className="relative text-5xl md:text-7xl font-extrabold leading-tight max-w-4xl mb-6 tracking-tight text-slate-900 dark:text-white" style={{ fontFamily: "var(--font-syne)" }}>
-        The Server Platform
-        <br />
-        Built for{" "}
-        <span className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
-          Scale
-        </span>
+      <h1 style={{
+        position: "relative", fontSize: "clamp(2.8rem,7vw,5rem)", fontWeight: 800,
+        lineHeight: 1.1, maxWidth: 860, marginBottom: 24, letterSpacing: "-0.03em",
+        color: "#1a0533", fontFamily: "var(--font-syne)",
+      }}>
+        The Server Platform<br />Built for{" "}
+        <span style={{
+          background: "linear-gradient(135deg,#7c3aed,#a855f7,#6d28d9)",
+          WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+        }}>Scale</span>
       </h1>
 
-      <p className="relative text-slate-500 dark:text-slate-400 text-lg max-w-xl mb-10 font-light">
+      <p style={{ position: "relative", color: "#6b5a8a", fontSize: "1.1rem", maxWidth: 500, marginBottom: 40, fontWeight: 300, lineHeight: 1.7 }}>
         Colobix delivers blazing-fast, ultra-reliable server infrastructure for businesses that cannot afford downtime.
       </p>
 
-      <div className="relative flex flex-wrap gap-4 justify-center">
-        <a href="#pricing" className="bg-gradient-to-r from-cyan-400 to-blue-500 text-white px-8 py-3.5 rounded-lg font-bold hover:shadow-[0_0_30px_rgba(0,200,255,0.35)] hover:-translate-y-0.5 transition-all">
-          Start Project
-        </a>
-        <a href="#features" className="border border-slate-200 dark:border-cyan-500/10 text-slate-700 dark:text-white px-8 py-3.5 rounded-lg font-semibold hover:border-cyan-400 dark:hover:border-cyan-400/40 hover:bg-cyan-50 dark:hover:bg-cyan-400/5 transition-all">
-          Explore Features →
-        </a>
+      <div style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 14, justifyContent: "center" }}>
+        <a href="#pricing" style={{
+          background: "linear-gradient(135deg,#7c3aed,#a855f7)", color: "#fff",
+          padding: "14px 32px", borderRadius: 10, fontWeight: 700,
+          textDecoration: "none", fontSize: 15, boxShadow: "0 4px 20px rgba(124,58,237,0.35)",
+          transition: "all 0.3s",
+        }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 35px rgba(124,58,237,0.55)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 20px rgba(124,58,237,0.35)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
+        >Start Project</a>
+        <a href="#features" style={{
+          border: "1.5px solid rgba(124,58,237,0.25)", color: "#7c3aed",
+          padding: "14px 32px", borderRadius: 10, fontWeight: 600,
+          textDecoration: "none", fontSize: 15, background: "transparent",
+          transition: "all 0.3s",
+        }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "rgba(124,58,237,0.06)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(124,58,237,0.5)"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(124,58,237,0.25)"; }}
+        >Explore Features →</a>
       </div>
 
       {/* Stats */}
-      <div className="relative flex flex-wrap gap-10 mt-20 justify-center">
-        {stats.map((s) => (
-          <div key={s.label} className="text-center">
-            <div className="text-3xl font-extrabold text-slate-900 dark:text-white" style={{ fontFamily: "var(--font-syne)" }}>{s.num}</div>
-            <div className="text-xs text-slate-400 uppercase tracking-widest mt-1">{s.label}</div>
+      <div style={{ position: "relative", display: "flex", flexWrap: "wrap", gap: 56, marginTop: 80, justifyContent: "center" }}>
+        {stats.map((s, i) => (
+          <div key={s.label} style={{ textAlign: "center" }}>
+            {i > 0 && <div style={{ position: "absolute", left: 0, top: "20%", height: "60%", width: 1, background: "rgba(124,58,237,0.12)" }} />}
+            <div style={{ fontSize: "2rem", fontWeight: 800, color: "#1a0533", fontFamily: "var(--font-syne)" }}>{s.num}</div>
+            <div style={{ fontSize: 11, color: "#9d89b8", textTransform: "uppercase", letterSpacing: "0.15em", marginTop: 4 }}>{s.label}</div>
           </div>
         ))}
       </div>

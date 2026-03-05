@@ -1,33 +1,26 @@
-/* globals.css */
 @import "tailwindcss";
 @source "../components/**/*.{ts,tsx}";
 @source "../app/**/*.{ts,tsx}";
 
-@variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --font-cormorant: "Cormorant Garamond", serif;
   --font-outfit: "Outfit", sans-serif;
-  /* keep backward compat so existing --font-syne refs still work */
   --font-syne: "Outfit", sans-serif;
   --font-sans: "Outfit", sans-serif;
 }
 
 * { box-sizing: border-box; }
 
-/* Fix dark mode text visibility globally */
-.dark {
-  color-scheme: dark;
-}
-
-.dark p {
-  color: rgb(203 213 225); /* slate-300 */
-}
-
-.dark h1, .dark h2, .dark h3, .dark h4 {
-  color: rgb(241 245 249); /* slate-100 */
-}
-
-.dark span {
-  color: inherit;
+:root {
+  --bg: #ffffff;
+  --bg-soft: #faf9ff;
+  --bg-card: #f5f3ff;
+  --border: rgba(124, 58, 237, 0.12);
+  --border-hover: rgba(124, 58, 237, 0.35);
+  --text-primary: #1a0533;
+  --text-secondary: #6b5a8a;
+  --text-muted: #9d89b8;
+  --purple: #7c3aed;
+  --purple-light: #a855f7;
+  --purple-soft: rgba(124, 58, 237, 0.08);
+  --purple-glow: rgba(168, 85, 247, 0.25);
 }
