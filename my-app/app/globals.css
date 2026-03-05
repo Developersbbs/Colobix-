@@ -1,26 +1,33 @@
+/* globals.css */
 @import "tailwindcss";
+@source "../components/**/*.{ts,tsx}";
+@source "../app/**/*.{ts,tsx}";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-cormorant: "Cormorant Garamond", serif;
+  --font-outfit: "Outfit", sans-serif;
+  /* keep backward compat so existing --font-syne refs still work */
+  --font-syne: "Outfit", sans-serif;
+  --font-sans: "Outfit", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* { box-sizing: border-box; }
+
+/* Fix dark mode text visibility globally */
+.dark {
+  color-scheme: dark;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark p {
+  color: rgb(203 213 225); /* slate-300 */
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: rgb(241 245 249); /* slate-100 */
+}
+
+.dark span {
+  color: inherit;
 }
