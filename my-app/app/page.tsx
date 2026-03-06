@@ -1,4 +1,4 @@
-import Cursor       from "@/components/Cursor";
+
 import Navbar       from "@/components/NavBar";
 import Hero         from "@/components/Hero";
 import LogoStrip    from "@/components/LogoStrip";
