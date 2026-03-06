@@ -1,37 +1,61 @@
 "use client";
+import { useReveal } from "@/hooks/useReveal";
+
 const testimonials = [
-  { stars: 5, text: "We migrated our entire SaaS stack to Colobix six months ago. The latency improvement was immediate — our p95 response time dropped by over 60%.", name: "James Mercer", role: "CTO, Stackify", initials: "JM" },
-  { stars: 5, text: "Colobix's support team is unlike any provider we've used before. Issues get resolved in minutes, not hours. Their infra is rock solid.", name: "Priya Nair", role: "DevOps Lead, Lumitech", initials: "PN" },
-  { stars: 5, text: "The DDoS protection alone is worth every penny. We took a 400Gbps hit last quarter and our users didn't notice a thing.", name: "Marcus Schulz", role: "Infrastructure Eng, PayVault", initials: "MS" },
+  { stars: 5, text: "We migrated our entire SaaS stack to Colobix. The latency improvement was immediate — p95 response time dropped by over 60%.", name: "James Mercer", role: "CTO, Stackify", initials: "JM", color: "#7c3aed" },
+  { stars: 5, text: "Colobix's support team is unlike any provider before. Issues get resolved in minutes. Their infra is rock solid.", name: "Priya Nair", role: "DevOps Lead, Lumitech", initials: "PN", color: "#a855f7" },
+  { stars: 5, text: "The DDoS protection is worth every penny. We took a 400Gbps hit last quarter and our users didn't notice a thing.", name: "Marcus Schulz", role: "Infrastructure Eng, PayVault", initials: "MS", color: "#6d28d9" },
+  { stars: 5, text: "Provisioning is instantaneous. We scaled from 2 to 40 nodes during Black Friday with zero downtime.", name: "Sara Lindqvist", role: "Eng Director, ShopFlow", initials: "SL", color: "#8b5cf6" },
+  { stars: 5, text: "Best price-to-performance ratio we've ever found. Colobix simply outperforms the big cloud providers.", name: "Tom Nakamura", role: "Founder, ByteLab", initials: "TN", color: "#7c3aed" },
+  { stars: 5, text: "Their global PoPs cut our international latency in half. Users in Asia-Pacific finally get the fast experience they deserve.", name: "Leila Hosseini", role: "VP Engineering, Nexora", initials: "LH", color: "#a855f7" },
 ];
 
-export default function Testimonials() {
+function Card({ t }: { t: typeof testimonials[0] }) {
   return (
-    <section id="clients" style={{ background: "#faf9ff", borderTop: "1px solid rgba(124,58,237,0.08)" }}>
-      <div style={{ maxWidth: 1152, margin: "0 auto", padding: "7rem 5%" }}>
-        <span style={{ color: "#7c3aed", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em" }}>Testimonials</span>
-        <h2 style={{ fontSize: "clamp(2rem,4vw,2.8rem)", fontWeight: 800, marginTop: 12, marginBottom: 16, color: "#1a0533", fontFamily: "var(--font-syne)" }}>Trusted by engineering teams worldwide</h2>
-        <p style={{ color: "#6b5a8a", fontSize: "1.05rem", fontWeight: 300, maxWidth: 480, marginBottom: 56 }}>Here's what our clients say about running on Colobix.</p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 20 }}>
-          {testimonials.map((t) => (
-            <div key={t.name} style={{
-              background: "#ffffff", border: "1px solid rgba(124,58,237,0.1)", borderRadius: 20, padding: "2rem",
-              transition: "all 0.3s",
-            }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(124,58,237,0.3)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 30px rgba(124,58,237,0.08)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(124,58,237,0.1)"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
-            >
-              <div style={{ color: "#a855f7", letterSpacing: "0.15em", marginBottom: 16, fontSize: "1.1rem" }}>{"★".repeat(t.stars)}</div>
-              <p style={{ color: "#6b5a8a", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: 24 }}>{t.text}</p>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.8rem", color: "#7c3aed" }}>{t.initials}</div>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: "0.875rem", color: "#1a0533" }}>{t.name}</div>
-                  <div style={{ color: "#9d89b8", fontSize: "0.75rem" }}>{t.role}</div>
-                </div>
-              </div>
-            </div>
-          ))}
+    <div style={{
+      width: 360, flexShrink: 0, margin: "0 12px",
+      background: "#fff", border: "1px solid rgba(124,58,237,0.1)",
+      borderRadius: 20, padding: "1.75rem",
+      boxShadow: "0 4px 20px rgba(124,58,237,0.06)",
+      transition: "all 0.3s",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(124,58,237,0.3)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(124,58,237,0.12)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(124,58,237,0.1)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(124,58,237,0.06)"; e.currentTarget.style.transform = "translateY(0)"; }}
+    >
+      <div style={{ color: "#a855f7", letterSpacing: "0.1em", fontSize: "1.1rem", marginBottom: 16 }}>{"★".repeat(t.stars)}</div>
+      <p style={{ color: "#5b4d7a", fontSize: "0.9rem", lineHeight: 1.75, marginBottom: 20, fontStyle: "italic" }}>"{t.text}"</p>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ width: 40, height: 40, borderRadius: "50%", background: `${t.color}18`, border: `1.5px solid ${t.color}40`, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.8rem", color: t.color }}>{t.initials}</div>
+        <div>
+          <div style={{ fontWeight: 600, fontSize: "0.875rem", color: "#12002e" }}>{t.name}</div>
+          <div style={{ color: "#9d88c0", fontSize: "0.75rem" }}>{t.role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Testimonials() {
+  const { ref, visible } = useReveal();
+  const doubled = [...testimonials, ...testimonials];
+  return (
+    <section id="clients" style={{ background: "#fff", borderTop: "1px solid rgba(124,58,237,0.07)", overflow: "hidden" }}>
+      <div ref={ref} style={{ padding: "7rem 0" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto 56px", padding: "0 5%" }}>
+          <div className={`reveal ${visible ? "visible" : ""}`}>
+            <span style={{ color: "#7c3aed", fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.16em" }}>Testimonials</span>
+          </div>
+          <h2 className={`reveal reveal-delay-1 ${visible ? "visible" : ""}`} style={{ fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 800, marginTop: 12, color: "#12002e", fontFamily: "var(--font-syne)", letterSpacing: "-0.03em" }}>
+            Trusted by engineering<br /><span className="grad-text">teams worldwide</span>
+          </h2>
+        </div>
+        {/* Marquee */}
+        <div style={{ position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(90deg,#fff,transparent)", zIndex: 2 }} />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 160, background: "linear-gradient(-90deg,#fff,transparent)", zIndex: 2 }} />
+          <div className="marquee-track" style={{ padding: "12px 0" }}>
+            {doubled.map((t, i) => <Card key={i} t={t} />)}
+          </div>
         </div>
       </div>
     </section>
