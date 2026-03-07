@@ -327,6 +327,7 @@ export default function About() {
         borderTop:"1px solid rgba(124,58,237,0.08)",
         position:"relative", overflow:"hidden",
         display:"flex", alignItems:"center",
+        cursor:"default"
       }}
     >
       <style>{`
