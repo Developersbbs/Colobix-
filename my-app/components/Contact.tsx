@@ -234,7 +234,6 @@ export default function Contact() {
               position:"relative", overflow:"hidden",
             }}>
               {/* scan line */}
-              <div style={{ position:"absolute", left:0, right:0, height:1.5, background:"linear-gradient(90deg,transparent,rgba(124,58,237,0.3),transparent)", zIndex:10, pointerEvents:"none", animation:"contact-scanLine 4s linear infinite" }} />
               {/* top accent */}
               <div style={{ position:"absolute", top:0, left:0, right:0, height:2, background:"linear-gradient(90deg,transparent,#7c3aed,#a855f7,transparent)" }} />
 

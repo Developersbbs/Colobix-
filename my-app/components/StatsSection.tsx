@@ -268,7 +268,7 @@ export default function Stats() {
           {/* subtext */}
           <p style={{
             fontFamily:"var(--font-body)", fontSize:"0.95rem",
-            color: "#5b4d7a", margin:"0 auto 28px",
+            color:"#5b4d7a", margin:"0 auto 28px",
             letterSpacing:"0.01em", fontWeight:300,
             maxWidth: 400, lineHeight: 1.7,
           }}>

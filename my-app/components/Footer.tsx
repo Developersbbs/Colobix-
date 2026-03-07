@@ -222,11 +222,16 @@ export default function Footer() {
               style={{
                 textDecoration:"none", display:"inline-block", marginBottom:20,
                 transform: logoHovered ? "scale(1.04)" : "scale(1)",
-                transition:"transform 0.3s ease",
-                filter: logoHovered ? "drop-shadow(0 0 12px rgba(192,132,252,0.6))" : "none",
+                transition:"transform 0.3s ease, box-shadow 0.3s ease",
+                background: "#ffffff",
+                borderRadius: 12,
+                padding: "8px 16px",
+                boxShadow: logoHovered
+                  ? "0 0 22px rgba(192,132,252,0.5), 0 4px 16px rgba(0,0,0,0.2)"
+                  : "0 2px 12px rgba(0,0,0,0.25)",
               }}
             >
-              <img src="/colobix-logo.png" alt="Colobix" style={{ height:100, width:100, objectFit:"contain" }} />
+              <img src="/colobix-logo.png" alt="Colobix" style={{height:"70px",width:"90px",objectFit:"contain", display:"block" }} />
             </a>
             <p style={{ color: "#ede9fe", fontSize:"0.9rem", lineHeight:1.85, maxWidth:260, fontWeight: 400 }}>
               Enterprise server infrastructure for teams that demand reliability, performance, and speed.
