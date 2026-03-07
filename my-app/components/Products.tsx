@@ -99,7 +99,7 @@ function useInView(threshold = 0.12) {
 function VpsAnimation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [metrics, setMetrics] = useState({ cpu: 62, ram: 47, disk: 31, net: 78 });
-  const histRef = useRef<number[]>(Array(40).fill(50));
+  const histRef = useRef<number[]>(Array(50).fill(50));
   const frameRef = useRef<number>(0);
 
   useEffect(() => {
@@ -126,17 +126,17 @@ function VpsAnimation() {
       const pts = histRef.current;
       const step = W / (pts.length - 1);
       const grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, "rgba(139,47,201,0.18)"); grad.addColorStop(1, "rgba(139,47,201,0)");
+      grad.addColorStop(0, "rgba(139,47,201,0.22)"); grad.addColorStop(1, "rgba(139,47,201,0)");
       ctx.beginPath(); ctx.moveTo(0, H);
       pts.forEach((v, i) => ctx.lineTo(i * step, H - (v / 100) * H));
       ctx.lineTo((pts.length - 1) * step, H); ctx.closePath();
       ctx.fillStyle = grad; ctx.fill();
-      ctx.beginPath(); ctx.strokeStyle = A; ctx.lineWidth = 2; ctx.lineJoin = "round";
+      ctx.beginPath(); ctx.strokeStyle = A; ctx.lineWidth = 2.5; ctx.lineJoin = "round";
       pts.forEach((v, i) => { const x = i * step, y = H - (v/100)*H; i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); });
       ctx.stroke();
       const lx = (pts.length-1)*step, ly = H - (pts[pts.length-1]/100)*H;
-      ctx.beginPath(); ctx.arc(lx, ly, 4, 0, Math.PI*2);
-      ctx.fillStyle = A; ctx.shadowColor = A; ctx.shadowBlur = 10; ctx.fill(); ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(lx, ly, 5, 0, Math.PI*2);
+      ctx.fillStyle = A; ctx.shadowColor = A; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
       frameRef.current = requestAnimationFrame(draw);
     };
     frameRef.current = requestAnimationFrame(draw);
@@ -151,36 +151,41 @@ function VpsAnimation() {
   ];
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
-        <div style={{ borderRadius:14, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"rgba(250,247,253,0.95)", padding:"12px 14px" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
-            <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, letterSpacing:"0.18em", color:"rgba(46,18,74,0.5)", textTransform:"uppercase" as const }}>CPU Load — Live</span>
-            <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:A }}>{Math.round(metrics.cpu)}%</span>
+    <div style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"52px 20px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", minWidth:0, display:"flex", flexDirection:"column", gap:14 }}>
+        {/* Chart */}
+        <div style={{ borderRadius:16, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"rgba(250,247,253,0.95)", padding:"16px 18px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
+            <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, letterSpacing:"0.18em", color:"rgba(46,18,74,0.5)", textTransform:"uppercase" as const }}>CPU Load — Live</span>
+            <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:A }}>{Math.round(metrics.cpu)}%</span>
           </div>
-          <canvas ref={canvasRef} width={320} height={110} style={{ width:"100%", height:110, display:"block" }} />
+          <canvas ref={canvasRef} width={500} height={100} style={{ width:"100%", height:100, display:"block" }} />
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+
+        {/* Gauges */}
+        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
           {gauges.map(g => (
-            <div key={g.label} style={{ borderRadius:12, border:"1px solid rgba(46,18,74,0.08)", background:"rgba(250,247,253,0.9)", padding:"10px 12px" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
-                <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.45)", textTransform:"uppercase" as const, letterSpacing:"0.1em" }}>{g.label}</span>
-                <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:g.color }}>{Math.round(g.value)}%</span>
+            <div key={g.label} style={{ borderRadius:14, border:"1px solid rgba(46,18,74,0.08)", background:"rgba(250,247,253,0.9)", padding:"14px 16px" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:10 }}>
+                <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.45)", textTransform:"uppercase" as const, letterSpacing:"0.1em" }}>{g.label}</span>
+                <span style={{ fontSize:13, fontFamily:"monospace", fontWeight:700, color:g.color }}>{Math.round(g.value)}%</span>
               </div>
-              <div style={{ height:5, borderRadius:99, background:"rgba(46,18,74,0.07)", overflow:"hidden" }}>
-                <div style={{ height:"100%", width:`${g.value}%`, borderRadius:99, background:g.color, boxShadow:`0 0 8px ${g.color}60`, transition:"width 0.8s ease-out" }} />
+              <div style={{ height:8, borderRadius:99, background:"rgba(46,18,74,0.07)", overflow:"hidden" }}>
+                <div style={{ height:"100%", width:`${g.value}%`, borderRadius:99, background:g.color, boxShadow:`0 0 10px ${g.color}60`, transition:"width 0.8s cubic-bezier(0.16,1,0.3,1)" }} />
               </div>
             </div>
           ))}
         </div>
-        <div style={{ display:"flex", gap:8 }}>
+
+        {/* Server pods */}
+        <div style={{ display:"flex", gap:10 }}>
           {[["vps-01","#22c55e","running"],["vps-02","#f59e0b","updating"],["vps-03","#22c55e","running"]].map(([id,c,s]) => (
-            <div key={id} style={{ flex:1, borderRadius:10, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"7px 10px" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:3 }}>
-                <div style={{ width:6, height:6, borderRadius:"50%", background:c, boxShadow:`0 0 6px ${c}` }} />
-                <span style={{ fontSize:8, fontFamily:"monospace", fontWeight:700, color:P }}>{id}</span>
+            <div key={id} style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"10px 14px" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:5 }}>
+                <div style={{ width:8, height:8, borderRadius:"50%", background:c, boxShadow:`0 0 8px ${c}` }} />
+                <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:700, color:P }}>{id}</span>
               </div>
-              <span style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)" }}>{s}</span>
+              <span style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)" }}>{s}</span>
             </div>
           ))}
         </div>
@@ -209,9 +214,9 @@ function CloudAnimation() {
       const from = Math.floor(Math.random() * pops.length);
       let to = Math.floor(Math.random() * pops.length);
       while (to === from) to = Math.floor(Math.random() * pops.length);
-      packets.push({ from, to, progress:0, speed:0.008+Math.random()*0.006 });
+      packets.push({ from, to, progress:0, speed:0.006+Math.random()*0.005 });
     };
-    for (let i = 0; i < 3; i++) addPacket();
+    for (let i = 0; i < 4; i++) addPacket();
 
     const draw = () => {
       const W = canvas.width, H = canvas.height;
@@ -238,21 +243,21 @@ function CloudAnimation() {
         const p=pk.progress;
         const x=(1-p)*(1-p)*ax + 2*(1-p)*p*mx + p*p*bx;
         const y=(1-p)*(1-p)*ay + 2*(1-p)*p*my + p*p*by;
-        const grd=ctx.createRadialGradient(x,y,0,x,y,6);
+        const grd=ctx.createRadialGradient(x,y,0,x,y,8);
         grd.addColorStop(0,"rgba(168,85,247,0.9)"); grd.addColorStop(1,"rgba(168,85,247,0)");
-        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
-        ctx.beginPath(); ctx.arc(x,y,2.5,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,8,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
+        ctx.beginPath(); ctx.arc(x,y,3,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
       }
       pops.forEach((pop, i) => {
         const x=pop.x*W, y=pop.y*H;
         const pulse=0.5+0.5*Math.sin(t*0.04+i*1.1);
-        ctx.beginPath(); ctx.arc(x,y,8+pulse*3,0,Math.PI*2);
+        ctx.beginPath(); ctx.arc(x,y,10+pulse*4,0,Math.PI*2);
         ctx.fillStyle=`rgba(139,47,201,${0.05+pulse*0.05})`; ctx.fill();
-        ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
-        ctx.fillStyle="rgba(250,247,253,0.95)"; ctx.strokeStyle=A; ctx.lineWidth=1.5; ctx.fill(); ctx.stroke();
-        ctx.beginPath(); ctx.arc(x,y,2,0,Math.PI*2); ctx.fillStyle=A; ctx.fill();
-        ctx.font="bold 8px monospace"; ctx.fillStyle="rgba(46,18,74,0.7)"; ctx.textAlign="center";
-        ctx.fillText(pop.label, x, y+16);
+        ctx.beginPath(); ctx.arc(x,y,6,0,Math.PI*2);
+        ctx.fillStyle="rgba(250,247,253,0.95)"; ctx.strokeStyle=A; ctx.lineWidth=2; ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(x,y,2.5,0,Math.PI*2); ctx.fillStyle=A; ctx.fill();
+        ctx.font="bold 10px monospace"; ctx.fillStyle="rgba(46,18,74,0.7)"; ctx.textAlign="center";
+        ctx.fillText(pop.label, x, y+20);
       });
       t++; frameRef.current = requestAnimationFrame(draw);
     };
@@ -261,20 +266,20 @@ function CloudAnimation() {
   }, []);
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:500 }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
-          <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.45)", letterSpacing:"0.18em", textTransform:"uppercase" as const }}>Global Edge Network</span>
-          <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"#22c55e", background:"rgba(34,197,94,0.1)", padding:"2px 8px", borderRadius:99, border:"1px solid rgba(34,197,94,0.3)" }}>40+ PoPs LIVE</span>
+    <div style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"52px 20px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", minWidth:0 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+          <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.45)", letterSpacing:"0.18em", textTransform:"uppercase" as const }}>Global Edge Network</span>
+          <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:700, color:"#22c55e", background:"rgba(34,197,94,0.1)", padding:"3px 10px", borderRadius:99, border:"1px solid rgba(34,197,94,0.3)" }}>40+ PoPs LIVE</span>
         </div>
-        <div style={{ borderRadius:16, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"linear-gradient(160deg,#FAF7FD,#F5F0FB)" }}>
-          <canvas ref={canvasRef} width={360} height={280} style={{ width:"100%", height:"auto", display:"block" }} />
+        <div style={{ borderRadius:18, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"linear-gradient(160deg,#FAF7FD,#F5F0FB)" }}>
+          <canvas ref={canvasRef} width={520} height={300} style={{ width:"100%", height:"auto", display:"block" }} />
         </div>
-        <div style={{ display:"flex", gap:8, marginTop:10 }}>
+        <div style={{ display:"flex", gap:10, marginTop:14 }}>
           {[["Latency","<10ms","#22c55e"],["Uptime","99.99%",A],["Zones","6 cont.","#6366F1"]].map(([k,v,c]) => (
-            <div key={k} style={{ flex:1, borderRadius:10, border:"1px solid rgba(46,18,74,0.08)", background:"rgba(250,247,253,0.9)", padding:"8px 10px", textAlign:"center" }}>
-              <div style={{ fontSize:11, fontWeight:800, fontFamily:"monospace", color:c as string }}>{v}</div>
-              <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", marginTop:2, textTransform:"uppercase" as const, letterSpacing:"0.08em" }}>{k}</div>
+            <div key={k} style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.08)", background:"rgba(250,247,253,0.9)", padding:"12px 14px", textAlign:"center" }}>
+              <div style={{ fontSize:16, fontWeight:800, fontFamily:"monospace", color:c as string }}>{v}</div>
+              <div style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", marginTop:4, textTransform:"uppercase" as const, letterSpacing:"0.08em" }}>{k}</div>
             </div>
           ))}
         </div>
@@ -313,46 +318,49 @@ function DedicatedAnimation() {
   const typeColors: Record<string,string> = { CPU:A, NET:"#22c55e", MGMT:"#f59e0b", DISK:"#6366F1" };
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
-        <div style={{ borderRadius:14, border:"2px solid rgba(46,18,74,0.2)", background:"rgba(250,247,253,0.98)", overflow:"hidden" }}>
-          <div style={{ background:`linear-gradient(135deg,${P},${A})`, padding:"8px 14px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-            <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"rgba(255,255,255,0.8)", letterSpacing:"0.18em" }}>SERVER RACK — BAY 03</span>
-            <div style={{ display:"flex", gap:4 }}>
+    <div style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"52px 20px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", minWidth:0, display:"flex", flexDirection:"column", gap:16 }}>
+        {/* Rack */}
+        <div style={{ borderRadius:16, border:"2px solid rgba(46,18,74,0.2)", background:"rgba(250,247,253,0.98)", overflow:"hidden" }}>
+          <div style={{ background:`linear-gradient(135deg,${P},${A})`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:"rgba(255,255,255,0.8)", letterSpacing:"0.18em" }}>SERVER RACK — BAY 03</span>
+            <div style={{ display:"flex", gap:6 }}>
               {[1,0,1].map((on,i) => (
-                <div key={i} style={{ width:6, height:6, borderRadius:"50%", background:on?"#22c55e":"rgba(255,255,255,0.3)", boxShadow:on?"0 0 6px #22c55e":"none" }} />
+                <div key={i} style={{ width:8, height:8, borderRadius:"50%", background:on?"#22c55e":"rgba(255,255,255,0.3)", boxShadow:on?"0 0 8px #22c55e":"none" }} />
               ))}
             </div>
           </div>
-          <div style={{ padding:"10px 12px", display:"flex", flexDirection:"column", gap:6 }}>
+          <div style={{ padding:"14px 16px", display:"flex", flexDirection:"column", gap:8 }}>
             {units.map((u, i) => {
               const isActive = activeRow === i;
               const tc = typeColors[u.type];
               return (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 10px", borderRadius:8, border:`1px solid ${isActive ? `${tc}50` : "rgba(46,18,74,0.08)"}`, background:isActive?`${tc}10`:"rgba(46,18,74,0.02)", transition:"all 0.5s ease-out" }}>
-                  <div style={{ width:7, height:7, borderRadius:"50%", flexShrink:0, background:isActive?tc:"rgba(46,18,74,0.18)", boxShadow:isActive?`0 0 8px ${tc}`:"none", transition:"all 0.4s" }} />
-                  <span style={{ fontSize:9, fontFamily:"monospace", flex:1, color:isActive?P:"rgba(46,18,74,0.45)", fontWeight:isActive?700:400, transition:"color 0.3s" }}>{u.label}</span>
-                  <span style={{ fontSize:8, fontFamily:"monospace", fontWeight:700, padding:"2px 6px", borderRadius:5, background:`${tc}18`, color:tc, border:`1px solid ${tc}40` }}>{u.type}</span>
-                  <span style={{ fontSize:8, fontFamily:"monospace", color:temps[i]>48?"#f59e0b":"rgba(46,18,74,0.35)", minWidth:28, textAlign:"right" as const }}>{Math.round(temps[i])}°C</span>
+                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, padding:"10px 12px", borderRadius:10, border:`1px solid ${isActive ? `${tc}50` : "rgba(46,18,74,0.08)"}`, background:isActive?`${tc}10`:"rgba(46,18,74,0.02)", transition:"all 0.5s cubic-bezier(0.16,1,0.3,1)" }}>
+                  <div style={{ width:9, height:9, borderRadius:"50%", flexShrink:0, background:isActive?tc:"rgba(46,18,74,0.18)", boxShadow:isActive?`0 0 10px ${tc}`:"none", transition:"all 0.4s" }} />
+                  <span style={{ fontSize:10, fontFamily:"monospace", flex:1, minWidth:0, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap", color:isActive?P:"rgba(46,18,74,0.45)", fontWeight:isActive?700:400, transition:"color 0.3s" }}>{u.label}</span>
+                  <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, padding:"2px 6px", borderRadius:5, flexShrink:0, background:`${tc}18`, color:tc, border:`1px solid ${tc}40` }}>{u.type}</span>
+                  <span style={{ fontSize:9, fontFamily:"monospace", flexShrink:0, color:temps[i]>48?"#f59e0b":"rgba(46,18,74,0.35)", minWidth:28, textAlign:"right" as const }}>{Math.round(temps[i])}°C</span>
                 </div>
               );
             })}
           </div>
         </div>
-        <div style={{ display:"flex", gap:10 }}>
-          <div style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"10px 12px" }}>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.12em", textTransform:"uppercase" as const, marginBottom:5 }}>Power Draw</div>
-            <div style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color:P, letterSpacing:"-0.03em" }}>{Math.round(power)}<span style={{ fontSize:10, fontWeight:500, color:"rgba(46,18,74,0.45)", marginLeft:2 }}>W</span></div>
-            <div style={{ height:3, borderRadius:99, background:"rgba(46,18,74,0.06)", marginTop:6, overflow:"hidden" }}>
+
+        {/* Stats */}
+        <div style={{ display:"flex", gap:12 }}>
+          <div style={{ flex:1, borderRadius:14, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"14px 16px" }}>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.12em", textTransform:"uppercase" as const, marginBottom:6 }}>Power Draw</div>
+            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:P, letterSpacing:"-0.03em" }}>{Math.round(power)}<span style={{ fontSize:13, fontWeight:500, color:"rgba(46,18,74,0.45)", marginLeft:3 }}>W</span></div>
+            <div style={{ height:5, borderRadius:99, background:"rgba(46,18,74,0.06)", marginTop:8, overflow:"hidden" }}>
               <div style={{ height:"100%", width:`${((power-380)/100)*100}%`, background:`linear-gradient(90deg,${A},#6366F1)`, transition:"width 0.6s" }} />
             </div>
           </div>
-          <div style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"10px 12px" }}>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.12em", textTransform:"uppercase" as const, marginBottom:5 }}>Uplink</div>
-            <div style={{ fontSize:18, fontWeight:800, fontFamily:"monospace", color:"#22c55e", letterSpacing:"-0.03em" }}>10<span style={{ fontSize:10, fontWeight:500, color:"rgba(46,18,74,0.45)", marginLeft:2 }}>GbE</span></div>
-            <div style={{ display:"flex", gap:3, marginTop:6 }}>
+          <div style={{ flex:1, borderRadius:14, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.9)", padding:"14px 16px" }}>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.12em", textTransform:"uppercase" as const, marginBottom:6 }}>Uplink</div>
+            <div style={{ fontSize:28, fontWeight:800, fontFamily:"monospace", color:"#22c55e", letterSpacing:"-0.03em" }}>10<span style={{ fontSize:13, fontWeight:500, color:"rgba(46,18,74,0.45)", marginLeft:3 }}>GbE</span></div>
+            <div style={{ display:"flex", gap:4, marginTop:8 }}>
               {Array(8).fill(0).map((_,i) => (
-                <div key={i} style={{ flex:1, height:3, borderRadius:99, background:i<6?"#22c55e":"rgba(46,18,74,0.07)", boxShadow:i<6?"0 0 4px #22c55e80":"none" }} />
+                <div key={i} style={{ flex:1, height:5, borderRadius:99, background:i<6?"#22c55e":"rgba(46,18,74,0.07)", boxShadow:i<6?"0 0 4px #22c55e80":"none" }} />
               ))}
             </div>
           </div>
@@ -372,7 +380,7 @@ function SharedAnimation() {
   useEffect(() => {
     let prog = 0;
     const iv = setInterval(() => {
-      prog += 0.8; setProgress(Math.min(100, prog));
+      prog += 0.7; setProgress(Math.min(100, prog));
       setDeployStep(Math.floor((Math.min(100,prog)/100)*(steps.length-0.01)));
       if (prog >= 100) { setDone(true); clearInterval(iv); setTimeout(() => { setProgress(0); setDeployStep(0); setDone(false); prog=0; }, 2600); }
     }, 55);
@@ -388,44 +396,51 @@ function SharedAnimation() {
   ];
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:500 }}>
-        <div style={{ borderRadius:14, border:"1px solid rgba(46,18,74,0.14)", overflow:"hidden", boxShadow:"0 12px 40px rgba(46,18,74,0.1)" }}>
-          <div style={{ background:"linear-gradient(135deg,#FAF7FD,#F0EAFA)", padding:"9px 14px", borderBottom:"1px solid rgba(46,18,74,0.08)", display:"flex", alignItems:"center", gap:8 }}>
+    <div style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"52px 20px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", minWidth:0 }}>
+        <div style={{ borderRadius:16, border:"1px solid rgba(46,18,74,0.14)", overflow:"hidden", boxShadow:"0 12px 40px rgba(46,18,74,0.1)" }}>
+          {/* Browser chrome */}
+          <div style={{ background:"linear-gradient(135deg,#FAF7FD,#F0EAFA)", padding:"10px 14px", borderBottom:"1px solid rgba(46,18,74,0.08)", display:"flex", alignItems:"center", gap:8 }}>
             {[["#ff5f57"],["#febc2e"],["#28c840"]].map(([c],i) => (
-              <div key={i} style={{ width:9, height:9, borderRadius:"50%", background:c, boxShadow:`0 0 4px ${c}` }} />
+              <div key={i} style={{ width:10, height:10, borderRadius:"50%", flexShrink:0, background:c, boxShadow:`0 0 5px ${c}` }} />
             ))}
-            <div style={{ flex:1, background:"rgba(46,18,74,0.05)", border:"1px solid rgba(46,18,74,0.1)", borderRadius:6, padding:"3px 10px", fontSize:9, fontFamily:"monospace", color:"rgba(46,18,74,0.5)" }}>
-              https://yoursite.colobix.com
+            <div style={{ flex:1, minWidth:0, background:"rgba(46,18,74,0.05)", border:"1px solid rgba(46,18,74,0.1)", borderRadius:8, padding:"4px 10px", fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.5)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" as const }}>
+              yoursite.colobix.com
             </div>
-            {done && <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"#22c55e" }}>✓ LIVE</span>}
+            {done && <span style={{ fontSize:10, fontFamily:"monospace", fontWeight:700, flexShrink:0, color:"#22c55e" }}>✓ LIVE</span>}
           </div>
-          <div style={{ background:"#fff", padding:"10px 12px" }}>
-            <div style={{ fontSize:8, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.35)", letterSpacing:"0.14em", marginBottom:8 }}>FILE MANAGER — /public_html</div>
+
+          {/* File manager */}
+          <div style={{ background:"#fff", padding:"14px 16px" }}>
+            <div style={{ fontSize:10, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.35)", letterSpacing:"0.14em", marginBottom:12 }}>FILE MANAGER — /public_html</div>
             {files.map((f, i) => {
               const uploaded = progress > i * 20;
               return (
-                <div key={f.name} style={{ display:"flex", alignItems:"center", gap:9, padding:"5px 6px", borderRadius:7, marginBottom:4, background:uploaded?`${f.color}08`:"transparent", transition:"background 0.5s" }}>
-                  <span style={{ fontSize:13, opacity:uploaded?1:0.3, transition:"opacity 0.5s" }}>{f.icon}</span>
-                  <span style={{ fontSize:9, fontFamily:"monospace", flex:1, color:uploaded?P:"rgba(46,18,74,0.3)", transition:"color 0.5s" }}>{f.name}</span>
-                  {uploaded && <div style={{ width:8, height:8, borderRadius:"50%", background:"#22c55e", boxShadow:"0 0 6px #22c55e" }} />}
+                <div key={f.name} style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", borderRadius:10, marginBottom:6, background:uploaded?`${f.color}08`:"transparent", transition:"background 0.5s" }}>
+                  <span style={{ fontSize:18, opacity:uploaded?1:0.3, transition:"opacity 0.5s" }}>{f.icon}</span>
+                  <span style={{ fontSize:11, fontFamily:"monospace", flex:1, color:uploaded?P:"rgba(46,18,74,0.3)", transition:"color 0.5s" }}>{f.name}</span>
+                  {uploaded && <div style={{ width:10, height:10, borderRadius:"50%", background:"#22c55e", boxShadow:"0 0 8px #22c55e" }} />}
                 </div>
               );
             })}
           </div>
-          <div style={{ background:"rgba(250,247,253,0.98)", borderTop:"1px solid rgba(46,18,74,0.07)", padding:"10px 14px" }}>
-            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
-              <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:done?"#22c55e":A }}>{steps[deployStep]}</span>
-              <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:P }}>{Math.round(progress)}%</span>
+
+          {/* Progress bar */}
+          <div style={{ background:"rgba(250,247,253,0.98)", borderTop:"1px solid rgba(46,18,74,0.07)", padding:"14px 18px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
+              <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:done?"#22c55e":A }}>{steps[deployStep]}</span>
+              <span style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, color:P }}>{Math.round(progress)}%</span>
             </div>
-            <div style={{ height:6, borderRadius:99, background:"rgba(46,18,74,0.07)", overflow:"hidden" }}>
-              <div style={{ height:"100%", width:`${progress}%`, borderRadius:99, background:done?"#22c55e":`linear-gradient(90deg,${P},${A},#a855f7)`, boxShadow:`0 0 10px ${done?"#22c55e80":"rgba(139,47,201,0.5)"}`, transition:"width 0.1s, background 0.5s" }} />
+            <div style={{ height:8, borderRadius:99, background:"rgba(46,18,74,0.07)", overflow:"hidden" }}>
+              <div style={{ height:"100%", width:`${progress}%`, borderRadius:99, background:done?"#22c55e":`linear-gradient(90deg,${P},${A},#a855f7)`, boxShadow:`0 0 12px ${done?"#22c55e80":"rgba(139,47,201,0.5)"}`, transition:"width 0.1s, background 0.5s" }} />
             </div>
           </div>
         </div>
-        <div style={{ display:"flex", gap:6, marginTop:10, flexWrap:"wrap" as const }}>
+
+        {/* Tags */}
+        <div style={{ display:"flex", gap:8, marginTop:14, flexWrap:"wrap" as const }}>
           {["Free SSL","1-click WP","Daily backup","cPanel"].map(tag => (
-            <span key={tag} style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, padding:"4px 10px", borderRadius:99, background:"rgba(139,47,201,0.08)", border:"1px solid rgba(139,47,201,0.2)", color:A }}>{tag}</span>
+            <span key={tag} style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, padding:"6px 14px", borderRadius:99, background:"rgba(139,47,201,0.08)", border:"1px solid rgba(139,47,201,0.2)", color:A }}>{tag}</span>
           ))}
         </div>
       </div>
@@ -470,27 +485,27 @@ function WebsiteAnimation() {
       const W = canvas.width, H = canvas.height;
       ctx.clearRect(0,0,W,H);
       const rowH = H / resources.length;
-      const labelW = 80, barArea = W - labelW - 8;
+      const labelW = 96, barArea = W - labelW - 8;
       const progress = (t % 120) / 120;
       resources.forEach((r, i) => {
         const y = i * rowH;
         if (i%2===0) { ctx.fillStyle="rgba(46,18,74,0.02)"; ctx.fillRect(0,y,W,rowH); }
-        ctx.font="8px monospace"; ctx.fillStyle="rgba(46,18,74,0.45)"; ctx.textAlign="left";
-        ctx.fillText(r.name, 6, y+rowH/2+3);
+        ctx.font="10px monospace"; ctx.fillStyle="rgba(46,18,74,0.45)"; ctx.textAlign="left";
+        ctx.fillText(r.name, 8, y+rowH/2+4);
         const bx=labelW, bw=barArea*r.dur, bstart=barArea*r.start;
         ctx.fillStyle="rgba(46,18,74,0.05)";
-        roundRect(ctx, bx+bstart, y+4, bw, rowH-8, 3); ctx.fill();
+        roundRect(ctx, bx+bstart, y+6, bw, rowH-12, 4); ctx.fill();
         const fill=Math.max(0, Math.min(1, (progress-r.start)/r.dur));
         if (fill > 0) {
           const grad=ctx.createLinearGradient(bx+bstart,0,bx+bstart+bw,0);
           grad.addColorStop(0, r.color+"dd"); grad.addColorStop(1, r.color+"66");
           ctx.fillStyle=grad;
-          roundRect(ctx, bx+bstart, y+4, bw*fill, rowH-8, 3); ctx.fill();
+          roundRect(ctx, bx+bstart, y+6, bw*fill, rowH-12, 4); ctx.fill();
           if (fill < 1) {
             const edge=bx+bstart+bw*fill;
             const gl=ctx.createLinearGradient(edge-6,0,edge,0);
             gl.addColorStop(0, r.color+"00"); gl.addColorStop(1, r.color+"ff");
-            ctx.fillStyle=gl; ctx.fillRect(edge-6, y+4, 6, rowH-8);
+            ctx.fillStyle=gl; ctx.fillRect(edge-6, y+6, 6, rowH-12);
           }
         }
       });
@@ -507,27 +522,32 @@ function WebsiteAnimation() {
   }, []);
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
-        <div style={{ display:"flex", gap:10 }}>
-          <div style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", padding:"12px 14px" }}>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const, marginBottom:5 }}>PageSpeed</div>
-            <div style={{ fontSize:26, fontWeight:900, fontFamily:"monospace", color:score>=95?"#22c55e":A, lineHeight:1, letterSpacing:"-0.04em" }}>{score}</div>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:"#22c55e", marginTop:3 }}>● EXCELLENT</div>
+    <div style={{ width:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"52px 20px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", minWidth:0, display:"flex", flexDirection:"column", gap:14 }}>
+        {/* Score cards */}
+        <div style={{ display:"flex", gap:14 }}>
+          <div style={{ flex:1, borderRadius:16, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", padding:"18px 20px" }}>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const, marginBottom:8 }}>PageSpeed</div>
+            <div style={{ fontSize:42, fontWeight:900, fontFamily:"monospace", color:score>=95?"#22c55e":A, lineHeight:1, letterSpacing:"-0.04em" }}>{score}</div>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:"#22c55e", marginTop:6 }}>● EXCELLENT</div>
           </div>
-          <div style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", padding:"12px 14px" }}>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const, marginBottom:5 }}>TTFB</div>
-            <div style={{ fontSize:26, fontWeight:900, fontFamily:"monospace", color:P, lineHeight:1, letterSpacing:"-0.04em" }}>{ttfb}<span style={{ fontSize:11, color:"rgba(46,18,74,0.4)", fontWeight:400 }}>ms</span></div>
-            <div style={{ fontSize:8, fontFamily:"monospace", color:A, marginTop:3 }}>LiteSpeed</div>
+          <div style={{ flex:1, borderRadius:16, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", padding:"18px 20px" }}>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const, marginBottom:8 }}>TTFB</div>
+            <div style={{ fontSize:42, fontWeight:900, fontFamily:"monospace", color:P, lineHeight:1, letterSpacing:"-0.04em" }}>{ttfb}<span style={{ fontSize:16, color:"rgba(46,18,74,0.4)", fontWeight:400 }}>ms</span></div>
+            <div style={{ fontSize:10, fontFamily:"monospace", color:A, marginTop:6 }}>LiteSpeed</div>
           </div>
         </div>
-        <div style={{ borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", overflow:"hidden" }}>
-          <div style={{ padding:"8px 10px 4px", fontSize:8, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const }}>Request Waterfall</div>
-          <canvas ref={canvasRef} width={340} height={160} style={{ width:"100%", height:160, display:"block" }} />
+
+        {/* Waterfall */}
+        <div style={{ borderRadius:16, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", overflow:"hidden" }}>
+          <div style={{ padding:"10px 14px 4px", fontSize:10, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const }}>Request Waterfall</div>
+          <canvas ref={canvasRef} width={500} height={150} style={{ width:"100%", height:150, display:"block" }} />
         </div>
-        <div style={{ display:"flex", gap:6, flexWrap:"wrap" as const }}>
+
+        {/* Tags */}
+        <div style={{ display:"flex", gap:8, flexWrap:"wrap" as const }}>
           {["LiteSpeed","CDN Built-in","Brotli","HTTP/3"].map(tag => (
-            <span key={tag} style={{ fontSize:8, fontFamily:"monospace", fontWeight:700, padding:"3px 8px", borderRadius:99, background:"rgba(139,47,201,0.07)", border:"1px solid rgba(139,47,201,0.18)", color:A, whiteSpace:"nowrap" as const }}>{tag}</span>
+            <span key={tag} style={{ fontSize:11, fontFamily:"monospace", fontWeight:700, padding:"6px 14px", borderRadius:99, background:"rgba(139,47,201,0.07)", border:"1px solid rgba(139,47,201,0.18)", color:A, whiteSpace:"nowrap" as const }}>{tag}</span>
           ))}
         </div>
       </div>
@@ -574,49 +594,38 @@ export default function Products() {
       style={{ position:"relative", background:"linear-gradient(135deg,#ffffff 0%,#f8f2ff 35%,#f2e8ff 65%,#ede2fc 100%)", borderTop:`1px solid rgba(46,18,74,0.08)`, overflow:"hidden", cursor:"default" }}
     >
       <style>{`
-        @keyframes prod-headerUp  { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes prod-tabIn     { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes prod-cardLeft  { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes prod-cardRight { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
-        @keyframes prod-cardUp    { from{opacity:0;transform:translateY(40px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes prod-panelOut  { from{opacity:1} to{opacity:0} }
+        @keyframes prod-headerUp  { from{opacity:0;transform:translateY(50px)}              to{opacity:1;transform:translateY(0)} }
+        @keyframes prod-tabIn     { from{opacity:0;transform:translateY(20px) scale(0.95)}  to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes prod-cardLeft  { from{opacity:0;transform:translateX(-60px) scale(0.96)} to{opacity:1;transform:translateX(0) scale(1)} }
+        @keyframes prod-cardRight { from{opacity:0;transform:translateX(60px) scale(0.96)}  to{opacity:1;transform:translateX(0) scale(1)} }
+        @keyframes prod-cardUp    { from{opacity:0;transform:translateY(60px) scale(0.96)}  to{opacity:1;transform:translateY(0) scale(1)} }
+        @keyframes prod-panelOut  { from{opacity:1;transform:translateY(0)}                 to{opacity:0;transform:translateY(-12px)} }
         @keyframes prod-tabSwitch { from{opacity:0;transform:translateX(-8px)}              to{opacity:1;transform:translateX(0)} }
-        @keyframes prod-orbFloat  { 0%,100%{transform:translate(0,0)} 50%{transform:translate(28px,-30px)} }
+        @keyframes prod-orbFloat  { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(28px,-30px) scale(1.06)} }
         @keyframes ledBlink       { 0%,100%{opacity:1} 50%{opacity:0.15} }
         @keyframes prod-lineGrow  { from{transform:scaleX(0)} to{transform:scaleX(1)} }
 
-        /* Tab scrollable strip on mobile */
         .prod-tabs-strip {
           display: flex;
           justify-content: center;
           flex-wrap: wrap;
           gap: 8px;
         }
-        @media (max-width: 767px) {
-          .prod-tabs-strip {
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-          }
-        }
-
         .prod-tab:hover { border-color: rgba(46,18,74,0.3) !important; color: ${P} !important; background: rgba(46,18,74,0.04) !important; }
 
-        /* Animation panel heights */
+        /* Animation panel */
         .anim-panel-inner {
-          min-height: 600px;
-          height: 600px;
+          min-height: 520px;
+          overflow: hidden;
         }
         @media (max-width: 1023px) {
           .anim-panel-inner {
-            min-height: 560px;
-            height: 560px;
+            min-height: 0;
           }
         }
         @media (max-width: 767px) {
           .anim-panel-inner {
-            min-height: 520px;
-            height: 520px;
+            min-height: 0;
           }
         }
       `}</style>
@@ -627,7 +636,7 @@ export default function Products() {
       <div ref={ref} style={{ position:"relative",maxWidth:1280,margin:"0 auto",padding:isMobile?"4rem 5% 5rem":"7rem 5%",zIndex:1 }}>
 
         {/* HEADER */}
-        <div style={{ textAlign:"center", marginBottom:isMobile?32:56, animation:headerVisible?"prod-headerUp 1.1s 0s both ease-out":"none", opacity:headerVisible?undefined:0 }}>
+        <div style={{ textAlign:"center", marginBottom:isMobile?32:56, animation:headerVisible?"prod-headerUp 1.1s 0s both cubic-bezier(0.16,1,0.3,1)":"none", opacity:headerVisible?undefined:0 }}>
           <span style={{ color:A,fontSize:11,fontWeight:700,textTransform:"uppercase" as const,letterSpacing:"0.22em",display:"block",marginBottom:18 }}>What we offer</span>
           <h2 style={{ fontSize:isMobile?"clamp(1.9rem,7vw,2.5rem)":"clamp(2.2rem,4vw,3.4rem)",fontWeight:800,marginTop:0,marginBottom:16,color:"#1C0A2E",fontFamily:"var(--font-heading)",letterSpacing:"-0.035em",lineHeight:1.1 }}>
             Our <span style={{ background:`linear-gradient(135deg,${P},${A},#6366F1)`,WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent" }}>Products</span>
@@ -637,13 +646,13 @@ export default function Products() {
           </p>
           <div style={{ display:"flex",justifyContent:"center" }}>
             <div style={{ position:"relative",height:4,width:56 }}>
-              <div style={{ position:"absolute",inset:0,borderRadius:99,background:`linear-gradient(90deg,${P},${A},#6366F1)`,animation:headerVisible?"prod-lineGrow 0.9s 0.5s both ease-out":"none",transformOrigin:"left" }} />
+              <div style={{ position:"absolute",inset:0,borderRadius:99,background:`linear-gradient(90deg,${P},${A},#6366F1)`,animation:headerVisible?"prod-lineGrow 0.9s 0.5s both cubic-bezier(0.16,1,0.3,1)":"none",transformOrigin:"left" }} />
               <div style={{ position:"absolute",inset:0,borderRadius:99,background:`linear-gradient(90deg,${P},${A},#6366F1)`,filter:"blur(6px)",opacity:0.45 }} />
             </div>
           </div>
         </div>
 
-        {/* ── TABS: centered ── */}
+        {/* TABS */}
         <div className="prod-tabs-strip" style={{ marginBottom:isMobile?24:40 }}>
           {products.map((p, i) => {
             const isActive = active === i;
@@ -658,9 +667,9 @@ export default function Products() {
                   border:isActive?`1px solid rgba(46,18,74,0.4)`:`1px solid rgba(46,18,74,0.12)`,
                   color:isActive?"#fff":`rgba(46,18,74,0.6)`,
                   boxShadow:isActive?`0 6px 24px rgba(46,18,74,0.25)`:"none",
-                  transition:"all 0.25s ease-out",
-                  
-                  animation:tabsVisible?`prod-tabIn 0.6s ${i*0.1}s both ease-out`:"none",
+                  transition:"all 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+                  transform:isActive?"translateY(-2px)":"translateY(0)",
+                  animation:tabsVisible?`prod-tabIn 0.8s ${i*0.12}s both cubic-bezier(0.34,1.56,0.64,1)`:"none",
                   opacity:tabsVisible?undefined:0, overflow:"hidden",
                   whiteSpace:"nowrap" as const,
                 }}
@@ -673,27 +682,29 @@ export default function Products() {
           })}
         </div>
 
-        {/* ── CARD ── */}
+        {/* CARD */}
         <div style={{
           display:"grid",
-          gridTemplateColumns: isMobile ? "1fr" : "55% 45%",
+          gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr" : "1.1fr 0.9fr",
           borderRadius:isMobile?16:24, overflow:"hidden",
           border:`1px solid rgba(46,18,74,0.12)`,
           boxShadow:`0 24px 80px rgba(46,18,74,0.1),0 4px 20px rgba(46,18,74,0.06)`,
           animation:animating?"prod-panelOut 0.22s ease forwards":"none",
         }}>
 
-          {/* Animation panel — tall enough on all screens */}
+          {/* Animation panel — fills its space */}
           <div className="anim-panel-inner" style={{
             position:"relative",
+            overflow:"hidden",
             background:`linear-gradient(160deg,#FAF7FD,#F5F0FB,#EDE8F8)`,
-            borderRight: !isMobile ? `1px solid rgba(46,18,74,0.1)` : "none",
-            borderBottom: isMobile ? `1px solid rgba(46,18,74,0.1)` : "none",
-            animation:cardVisible?`${isMobile?"prod-cardUp":"prod-cardLeft"} 0.7s 0s both ease-out`:"none",
+            borderRight: (!isMobile && !isTablet) ? `1px solid rgba(46,18,74,0.1)` : "none",
+            borderBottom: (isMobile || isTablet) ? `1px solid rgba(46,18,74,0.1)` : "none",
+            animation:cardVisible?`${isMobile||isTablet?"prod-cardUp":"prod-cardLeft"} 1.1s 0s both cubic-bezier(0.16,1,0.3,1)`:"none",
             opacity:cardVisible?undefined:0,
           }}>
             <div style={{ position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,transparent,${P},${A},transparent)` }} />
             <div style={{ position:"absolute",inset:0,opacity:0.022,backgroundImage:`linear-gradient(${P} 1px,transparent 1px),linear-gradient(90deg,${P} 1px,transparent 1px)`,backgroundSize:"28px 28px" }} />
+            {/* LIVE PREVIEW badge */}
             <div style={{ position:"absolute",top:16,left:16,zIndex:20,display:"flex",alignItems:"center",gap:8,padding:"6px 14px",borderRadius:99,background:`rgba(46,18,74,0.07)`,border:`1px solid rgba(46,18,74,0.15)`,backdropFilter:"blur(8px)" }}>
               <div style={{ width:6,height:6,borderRadius:"50%",background:A,boxShadow:`0 0 0 3px rgba(139,47,201,0.2)`,animation:"ledBlink 1.5s ease-in-out infinite" }} />
               <span style={{ fontSize:9,fontFamily:"monospace",letterSpacing:"0.18em",textTransform:"uppercase" as const,color:`rgba(46,18,74,0.6)`,fontWeight:700 }}>Live Preview</span>
@@ -701,17 +712,17 @@ export default function Products() {
             <div style={{ position:"absolute",top:16,right:16,zIndex:20,padding:"5px 12px",borderRadius:8,fontSize:9,fontFamily:"monospace",background:`rgba(46,18,74,0.06)`,border:`1px solid rgba(46,18,74,0.14)`,color:`rgba(46,18,74,0.5)`,letterSpacing:"0.15em",textTransform:"uppercase" as const }}>
               {product.id.toUpperCase()}
             </div>
-            {/* Animation fills the full panel */}
-            <div style={{ position:"absolute",inset:0,top:52,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden" }}>
+            {/* Animation fills entire panel */}
+            <div style={{ position:"relative", zIndex:1, width:"100%", boxSizing:"border-box" }}>
               <Animation />
             </div>
           </div>
 
           {/* Text panel */}
           <div style={{
-            padding:isMobile?"1.75rem 1.5rem":"2rem 2rem",
+            padding:isMobile?"1.75rem 1.5rem":isTablet?"2rem 2.25rem":"2.5rem 2.75rem",
             background:"#fff", display:"flex", flexDirection:"column", justifyContent:"space-between",
-            animation:cardVisible?`${isMobile?"prod-cardUp":"prod-cardRight"} 0.7s 0.1s both ease-out`:animating?"none":"prod-tabSwitch 0.35s 0.1s both ease",
+            animation:cardVisible?`${isMobile||isTablet?"prod-cardUp":"prod-cardRight"} 1.1s 0.15s both cubic-bezier(0.16,1,0.3,1)`:animating?"none":"prod-tabSwitch 0.35s 0.1s both ease",
             opacity:cardVisible?undefined:animating?1:0,
           }}>
             <div>
@@ -730,9 +741,9 @@ export default function Products() {
               </ul>
             </div>
             <div style={{ marginTop:32,paddingTop:24,borderTop:`1px solid rgba(46,18,74,0.08)`,display:"flex",alignItems:"center",gap:20,flexWrap:isMobile?"wrap":"nowrap" as any }}>
-              <a href="#pricing" style={{ display:"inline-flex",alignItems:"center",gap:8,padding:isMobile?"11px 22px":"12px 28px",borderRadius:12,fontWeight:700,fontSize:"0.875rem",textDecoration:"none",background:`linear-gradient(135deg,${P},${A})`,color:"#fff",boxShadow:`0 6px 24px rgba(46,18,74,0.3)`,width:isMobile?"100%":"auto",justifyContent:isMobile?"center":"flex-start",transition:"transform 0.25s ease-out, box-shadow 0.25s ease-out" }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow=`0 10px 32px rgba(46,18,74,0.4)`; }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow=`0 6px 24px rgba(46,18,74,0.3)`; }}
+              <a href="#pricing" style={{ display:"inline-flex",alignItems:"center",gap:8,padding:isMobile?"11px 22px":"12px 28px",borderRadius:12,fontWeight:700,fontSize:"0.875rem",textDecoration:"none",background:`linear-gradient(135deg,${P},${A})`,color:"#fff",boxShadow:`0 6px 24px rgba(46,18,74,0.3)`,width:isMobile?"100%":"auto",justifyContent:isMobile?"center":"flex-start",transition:"all 0.3s cubic-bezier(0.34,1.56,0.64,1)" }}
+                onMouseEnter={e => { e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow=`0 10px 32px rgba(46,18,74,0.4)`; }}
+                onMouseLeave={e => { e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow=`0 6px 24px rgba(46,18,74,0.3)`; }}
               >
                 Get Started
                 <svg style={{ width:16,height:16 }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
