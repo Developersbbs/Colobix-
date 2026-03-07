@@ -151,14 +151,14 @@ function VpsAnimation() {
   ];
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 20px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:460, display:"flex", flexDirection:"column", gap:12 }}>
+    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
         <div style={{ borderRadius:14, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"rgba(250,247,253,0.95)", padding:"12px 14px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
             <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, letterSpacing:"0.18em", color:"rgba(46,18,74,0.5)", textTransform:"uppercase" as const }}>CPU Load — Live</span>
             <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:A }}>{Math.round(metrics.cpu)}%</span>
           </div>
-          <canvas ref={canvasRef} width={320} height={90} style={{ width:"100%", height:90, display:"block" }} />
+          <canvas ref={canvasRef} width={320} height={110} style={{ width:"100%", height:110, display:"block" }} />
         </div>
         <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
           {gauges.map(g => (
@@ -261,14 +261,14 @@ function CloudAnimation() {
   }, []);
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 20px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:460 }}>
+    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", maxWidth:500 }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:10 }}>
           <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.45)", letterSpacing:"0.18em", textTransform:"uppercase" as const }}>Global Edge Network</span>
           <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"#22c55e", background:"rgba(34,197,94,0.1)", padding:"2px 8px", borderRadius:99, border:"1px solid rgba(34,197,94,0.3)" }}>40+ PoPs LIVE</span>
         </div>
         <div style={{ borderRadius:16, overflow:"hidden", border:"1px solid rgba(46,18,74,0.1)", background:"linear-gradient(160deg,#FAF7FD,#F5F0FB)" }}>
-          <canvas ref={canvasRef} width={360} height={260} style={{ width:"100%", height:"auto", display:"block" }} />
+          <canvas ref={canvasRef} width={360} height={280} style={{ width:"100%", height:"auto", display:"block" }} />
         </div>
         <div style={{ display:"flex", gap:8, marginTop:10 }}>
           {[["Latency","<10ms","#22c55e"],["Uptime","99.99%",A],["Zones","6 cont.","#6366F1"]].map(([k,v,c]) => (
@@ -313,8 +313,8 @@ function DedicatedAnimation() {
   const typeColors: Record<string,string> = { CPU:A, NET:"#22c55e", MGMT:"#f59e0b", DISK:"#6366F1" };
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 20px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:460, display:"flex", flexDirection:"column", gap:12 }}>
+    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
         <div style={{ borderRadius:14, border:"2px solid rgba(46,18,74,0.2)", background:"rgba(250,247,253,0.98)", overflow:"hidden" }}>
           <div style={{ background:`linear-gradient(135deg,${P},${A})`, padding:"8px 14px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <span style={{ fontSize:9, fontFamily:"monospace", fontWeight:700, color:"rgba(255,255,255,0.8)", letterSpacing:"0.18em" }}>SERVER RACK — BAY 03</span>
@@ -388,8 +388,8 @@ function SharedAnimation() {
   ];
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 20px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:460 }}>
+    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", maxWidth:500 }}>
         <div style={{ borderRadius:14, border:"1px solid rgba(46,18,74,0.14)", overflow:"hidden", boxShadow:"0 12px 40px rgba(46,18,74,0.1)" }}>
           <div style={{ background:"linear-gradient(135deg,#FAF7FD,#F0EAFA)", padding:"9px 14px", borderBottom:"1px solid rgba(46,18,74,0.08)", display:"flex", alignItems:"center", gap:8 }}>
             {[["#ff5f57"],["#febc2e"],["#28c840"]].map(([c],i) => (
@@ -507,8 +507,8 @@ function WebsiteAnimation() {
   }, []);
 
   return (
-    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 20px", boxSizing:"border-box" }}>
-      <div style={{ width:"100%", maxWidth:460, display:"flex", flexDirection:"column", gap:10 }}>
+    <div style={{ width:"100%", height:"100%", display:"flex", alignItems:"center", justifyContent:"center", padding:"68px 24px 24px", boxSizing:"border-box" }}>
+      <div style={{ width:"100%", maxWidth:500, display:"flex", flexDirection:"column", gap:14 }}>
         <div style={{ display:"flex", gap:10 }}>
           <div style={{ flex:1, borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", padding:"12px 14px" }}>
             <div style={{ fontSize:8, fontFamily:"monospace", color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const, marginBottom:5 }}>PageSpeed</div>
@@ -523,7 +523,7 @@ function WebsiteAnimation() {
         </div>
         <div style={{ borderRadius:12, border:"1px solid rgba(46,18,74,0.09)", background:"rgba(250,247,253,0.95)", overflow:"hidden" }}>
           <div style={{ padding:"8px 10px 4px", fontSize:8, fontFamily:"monospace", fontWeight:700, color:"rgba(46,18,74,0.4)", letterSpacing:"0.14em", textTransform:"uppercase" as const }}>Request Waterfall</div>
-          <canvas ref={canvasRef} width={340} height={140} style={{ width:"100%", height:140, display:"block" }} />
+          <canvas ref={canvasRef} width={340} height={160} style={{ width:"100%", height:160, display:"block" }} />
         </div>
         <div style={{ display:"flex", gap:6, flexWrap:"wrap" as const }}>
           {["LiteSpeed","CDN Built-in","Brotli","HTTP/3"].map(tag => (
@@ -604,19 +604,19 @@ export default function Products() {
 
         /* Animation panel heights */
         .anim-panel-inner {
-          min-height: 560px;
-          height: 560px;
+          min-height: 600px;
+          height: 600px;
         }
         @media (max-width: 1023px) {
           .anim-panel-inner {
-            min-height: 500px;
-            height: 500px;
+            min-height: 560px;
+            height: 560px;
           }
         }
         @media (max-width: 767px) {
           .anim-panel-inner {
-            min-height: 440px;
-            height: 440px;
+            min-height: 520px;
+            height: 520px;
           }
         }
       `}</style>
@@ -702,7 +702,7 @@ export default function Products() {
               {product.id.toUpperCase()}
             </div>
             {/* Animation fills the full panel */}
-            <div style={{ position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden" }}>
+            <div style={{ position:"absolute",inset:0,top:52,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden" }}>
               <Animation />
             </div>
           </div>

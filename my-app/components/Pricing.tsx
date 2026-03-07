@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-/* ─── Responsive hook ─── */
 function useWindowWidth() {
   const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   useEffect(() => {
@@ -38,7 +37,6 @@ export default function Pricing() {
   const { ref, inView } = useInView();
   const [headerVisible, setHeaderVisible] = useState(false);
   const [cardVisible, setCardVisible]     = useState([false, false, false]);
-  const [mousePos, setMousePos]           = useState({ x: 0, y: 0 });
   const sectionRef = useRef<HTMLElement>(null);
   const width = useWindowWidth();
   const isMobile = width < 640;
@@ -53,17 +51,6 @@ export default function Pricing() {
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4); };
   }, [inView]);
 
-  useEffect(() => {
-    const el = sectionRef.current; if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-    };
-    el.addEventListener("mousemove", onMove);
-    return () => el.removeEventListener("mousemove", onMove);
-  }, []);
-
-  // On mobile/tablet, stack cards — use fromBottom anim for all
   const getAnim = (i: number) => {
     if (isMobile || isTablet) return "price-fromBottom";
     return cardAnims[i];
@@ -81,17 +68,14 @@ export default function Pricing() {
       }}
     >
       <style>{`
-        @keyframes price-fromLeft   { from{opacity:0;transform:translateX(-80px) scale(0.94)} to{opacity:1;transform:translateX(0) scale(1)} }
-        @keyframes price-fromBottom { from{opacity:0;transform:translateY(80px) scale(0.94)}  to{opacity:1;transform:translateY(0) scale(1)} }
-        @keyframes price-fromRight  { from{opacity:0;transform:translateX(80px) scale(0.94)}  to{opacity:1;transform:translateX(0) scale(1)} }
+        @keyframes price-fromLeft   { from{opacity:0;transform:translateX(-80px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes price-fromBottom { from{opacity:0;transform:translateY(80px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes price-fromRight  { from{opacity:0;transform:translateX(80px)} to{opacity:1;transform:translateX(0)} }
         @keyframes price-titleUp    { from{opacity:0;transform:translateY(50px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes price-orbA       { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-35px) scale(1.08)} }
+        @keyframes price-orbA       { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-35px)} }
         @keyframes price-orbB       { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-25px,20px)} }
-        @keyframes price-shimmer    { 0%{left:-100%} 100%{left:200%} }
-        @keyframes price-lineIn     { from{width:0} to{width:56px} }
+
       `}</style>
-
-
 
       {/* ambient orbs */}
       <div style={{ position:"absolute", top:-80, right:-80, width:480, height:480, borderRadius:"50%", background:"radial-gradient(circle,rgba(168,85,247,0.08),transparent 70%)", filter:"blur(55px)", animation:"price-orbA 14s ease-in-out infinite", pointerEvents:"none", zIndex:0 }} />
@@ -109,13 +93,13 @@ export default function Pricing() {
 
       <div ref={ref} style={{ maxWidth:1280, margin:"0 auto", padding: isMobile ? "4rem 5% 5rem" : "7rem 5%", position:"relative", zIndex:1 }}>
 
-        {/* ── HEADER ── */}
+        {/* HEADER */}
         <div style={{ textAlign:"center", marginBottom: isMobile ? 40 : 64 }}>
           <span style={{
             color:"#7c3aed", fontSize:11, fontWeight:700,
             textTransform:"uppercase" as const, letterSpacing:"0.16em",
             display:"block", marginBottom:12,
-            animation: headerVisible ? "price-titleUp 1.1s 0s both cubic-bezier(0.16,1,0.3,1)" : "none",
+            animation: headerVisible ? "price-titleUp 0.7s 0s both ease-out" : "none",
             opacity: headerVisible ? undefined : 0,
           }}>Pricing</span>
 
@@ -123,7 +107,7 @@ export default function Pricing() {
             fontSize: isMobile ? "clamp(1.8rem,7vw,2.4rem)" : "clamp(2rem,4vw,3rem)",
             fontWeight:800, marginTop:0, marginBottom:16,
             color:"#12002e", fontFamily:"var(--font-heading)", letterSpacing:"-0.03em",
-            animation: headerVisible ? "price-titleUp 1.1s 0.14s both cubic-bezier(0.16,1,0.3,1)" : "none",
+            animation: headerVisible ? "price-titleUp 0.7s 0.1s both ease-out" : "none",
             opacity: headerVisible ? undefined : 0,
           }}>
             Simple,{" "}
@@ -135,22 +119,21 @@ export default function Pricing() {
 
           <p style={{
             color:"#5b4d7a", fontSize:"1.05rem", fontWeight:300, maxWidth:440, margin:"0 auto",
-            animation: headerVisible ? "price-titleUp 1.1s 0.26s both cubic-bezier(0.16,1,0.3,1)" : "none",
+            animation: headerVisible ? "price-titleUp 0.7s 0.2s both ease-out" : "none",
             opacity: headerVisible ? undefined : 0,
           }}>
             No hidden fees. Scale up or down anytime.
           </p>
 
-          {/* animated divider */}
           <div style={{
             height:2, borderRadius:99, margin:"28px auto 0",
             background:"linear-gradient(90deg,transparent,#7c3aed,#a855f7,transparent)",
             width: headerVisible ? 120 : 0,
-            transition:"width 1.2s 0.4s cubic-bezier(0.16,1,0.3,1)",
+            transition:"width 0.9s 0.3s ease-out",
           }} />
         </div>
 
-        {/* ── CARDS ── */}
+        {/* CARDS */}
         <div style={{
           display:"grid",
           gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr 1fr" : "repeat(3,1fr)",
@@ -158,7 +141,6 @@ export default function Pricing() {
           alignItems:"start",
         }}>
           {plans.map((plan, i) => {
-            // On tablet, Enterprise card spans full width
             const spanFull = isTablet && i === 2;
             return (
               <div
@@ -168,7 +150,7 @@ export default function Pricing() {
                   maxWidth: spanFull ? 520 : undefined,
                   margin: spanFull ? "0 auto" : undefined,
                   width: spanFull ? "100%" : undefined,
-                  animation: cardVisible[i] ? `${getAnim(i)} 1.1s cubic-bezier(0.16,1,0.3,1) both` : "none",
+                  animation: cardVisible[i] ? `${getAnim(i)} 0.7s ease-out both` : "none",
                   opacity: cardVisible[i] ? undefined : 0,
                 }}
               >
@@ -183,32 +165,22 @@ export default function Pricing() {
                     boxShadow: plan.featured
                       ? "0 20px 60px rgba(124,58,237,0.15), 0 0 0 1px rgba(124,58,237,0.1)"
                       : "0 4px 20px rgba(124,58,237,0.04)",
-                    transition:"transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s",
+                    /* ── smooth ease-out, no bounce ── */
+                    transition: "box-shadow 0.3s ease-out",
                     overflow:"hidden", cursor:"default",
                   }}
                   onMouseEnter={e => {
-                    e.currentTarget.style.transform = "translateY(-10px)";
                     e.currentTarget.style.boxShadow = plan.featured
                       ? "0 32px 80px rgba(124,58,237,0.22)"
                       : "0 20px 60px rgba(124,58,237,0.1)";
-                    const shimmer = e.currentTarget.querySelector(".price-shimmer") as HTMLElement;
-                    if (shimmer) shimmer.style.animation = "price-shimmer 0.7s ease forwards";
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.transform = "translateY(0)";
                     e.currentTarget.style.boxShadow = plan.featured
                       ? "0 20px 60px rgba(124,58,237,0.15)"
                       : "0 4px 20px rgba(124,58,237,0.04)";
-                    const shimmer = e.currentTarget.querySelector(".price-shimmer") as HTMLElement;
-                    if (shimmer) shimmer.style.animation = "none";
                   }}
                 >
-                  {/* shimmer overlay */}
-                  <div className="price-shimmer" style={{
-                    position:"absolute", top:0, width:"55%", height:"100%",
-                    background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.45),transparent)",
-                    transform:"skewX(-14deg)", pointerEvents:"none", left:"-100%",
-                  }} />
+
 
                   {plan.featured && (
                     <>
@@ -233,7 +205,7 @@ export default function Pricing() {
                         fontSize:"0.875rem", color:"#12002e",
                         opacity: cardVisible[i] ? 1 : 0,
                         transform: cardVisible[i] ? "translateX(0)" : "translateX(-16px)",
-                        transition:`opacity 0.5s ${0.1 + fi * 0.07}s, transform 0.5s ${0.1 + fi * 0.07}s cubic-bezier(0.16,1,0.3,1)`,
+                        transition:`opacity 0.5s ${0.1 + fi * 0.07}s, transform 0.5s ${0.1 + fi * 0.07}s ease-out`,
                       }}>
                         <span style={{ width:18, height:18, borderRadius:"50%", background:"rgba(124,58,237,0.1)", border:"1px solid rgba(124,58,237,0.2)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontSize:10, color:"#7c3aed", fontWeight:700 }}>✓</span>
                         {f}
@@ -247,17 +219,32 @@ export default function Pricing() {
                   </ul>
 
                   <a href="#contact"
-                    className={plan.featured ? "btn-glow" : ""}
                     style={{
                       display:"block", textAlign:"center", padding:"13px",
                       borderRadius:12, fontWeight:700, fontSize:"0.9rem",
-                      textDecoration:"none", transition:"all 0.3s",
-                      ...(plan.featured ? { boxShadow:"0 4px 20px rgba(124,58,237,0.35)" } : {
-                        border:"1.5px solid rgba(124,58,237,0.2)", color:"#7c3aed", background:"transparent",
-                      }),
+                      textDecoration:"none",
+                      transition:"background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease",
+                      ...(plan.featured
+                        ? { background:"linear-gradient(135deg,#2E124A,#8B2FC9)", color:"#fff", boxShadow:"0 4px 20px rgba(124,58,237,0.35)" }
+                        : { border:"1.5px solid rgba(124,58,237,0.2)", color:"#7c3aed", background:"transparent" }
+                      ),
                     }}
-                    onMouseEnter={e => { if (!plan.featured) { e.currentTarget.style.background="rgba(124,58,237,0.06)"; e.currentTarget.style.borderColor="rgba(124,58,237,0.45)"; } }}
-                    onMouseLeave={e => { if (!plan.featured) { e.currentTarget.style.background="transparent"; e.currentTarget.style.borderColor="rgba(124,58,237,0.2)"; } }}
+                    onMouseEnter={e => {
+                      if (!plan.featured) {
+                        e.currentTarget.style.background = "rgba(124,58,237,0.06)";
+                        e.currentTarget.style.borderColor = "rgba(124,58,237,0.45)";
+                      } else {
+                        e.currentTarget.style.boxShadow = "0 8px 28px rgba(124,58,237,0.5)";
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!plan.featured) {
+                        e.currentTarget.style.background = "transparent";
+                        e.currentTarget.style.borderColor = "rgba(124,58,237,0.2)";
+                      } else {
+                        e.currentTarget.style.boxShadow = "0 4px 20px rgba(124,58,237,0.35)";
+                      }
+                    }}
                   >
                     {plan.cta}
                   </a>
