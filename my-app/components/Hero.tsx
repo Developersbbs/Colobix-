@@ -169,12 +169,19 @@ export default function Hero() {
         padding: "clamp(5rem, 10vw, 8rem) clamp(1.25rem, 5%, 5%) clamp(4rem, 8vw, 6rem)",
         overflow: "hidden",
         background: "linear-gradient(160deg, #ffffff 0%, #faf9ff 45%, #f0eaff 100%)",
-        /* ── ensure cursor is always visible throughout the section ── */
         cursor: "auto",
       }}
     >
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap');
+
         *, *::before, *::after { box-sizing: border-box; }
+
+        /* Apply Space Grotesk to everything inside the hero section only */
+        #hero,
+        #hero * {
+          font-family: 'Space Grotesk', sans-serif !important;
+        }
 
         /* Force cursor visibility for every child inside hero */
         #hero, #hero * {
@@ -287,7 +294,6 @@ export default function Hero() {
           font-size: clamp(1.35rem, 3vw, 2rem);
           font-weight: 800;
           color: #12002e;
-          font-family: var(--font-heading);
           letter-spacing: -0.03em;
           position: relative; z-index: 1;
           line-height: 1.1;
@@ -310,7 +316,6 @@ export default function Hero() {
           margin-bottom: 14px;
           letter-spacing: -0.045em;
           color: #12002e;
-          font-family: var(--font-heading);
           animation: heroIn 0.75s 0.1s both ease;
         }
 
