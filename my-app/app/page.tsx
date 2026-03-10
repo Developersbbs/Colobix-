@@ -1,4 +1,3 @@
-
 import Navbar       from "@/components/landing-page/NavBar";
 import Hero         from "@/components/landing-page/Hero";
 import LogoStrip    from "@/components/landing-page/LogoStrip";
@@ -14,7 +13,7 @@ import Footer       from "@/components/landing-page/Footer";
 
 export default function Home() {
   return (
-    <main style={{ background: "#fff", color: "#12002e", overflowX: "hidden" }}>
+    <main className="landing-page" style={{ background: "#fff", color: "#12002e", overflowX: "hidden" }}>
       {/* <Cursor /> */}
       <Navbar />
       <Hero />

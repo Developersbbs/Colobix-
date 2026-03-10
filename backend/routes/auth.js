@@ -111,6 +111,7 @@ router.post("/login", async (req, res) => {
       {
         userId: user.id,
         email: user.email,
+        role: user.role,
         easydcimToken: easydcimResult.easydcimToken,
       },
       process.env.JWT_SECRET,
@@ -123,6 +124,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        role: user.role,
       },
     });
 
