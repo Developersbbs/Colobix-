@@ -1,16 +1,16 @@
 
-import Navbar       from "@/components/NavBar";
-import Hero         from "@/components/Hero";
-import LogoStrip    from "@/components/LogoStrip";
-import About        from "@/components/About";
-import Features     from "@/components/Features";
-import Products     from "@/components/Products";
-import Stats        from "@/components/StatsSection";
-import Pricing      from "@/components/Pricing";
-import Testimonials from "@/components/Testimonials";
-import FAQ          from "@/components/FAQ";
-import Contact      from "@/components/Contact";
-import Footer       from "@/components/Footer";
+import Navbar       from "@/components/landing-page/NavBar";
+import Hero         from "@/components/landing-page/Hero";
+import LogoStrip    from "@/components/landing-page/LogoStrip";
+import About        from "@/components/landing-page/About";
+import Features     from "@/components/landing-page/Features";
+import Products     from "@/components/landing-page/Products";
+import Stats        from "@/components/landing-page/StatsSection";
+import Pricing      from "@/components/landing-page/Pricing";
+import Testimonials from "@/components/landing-page/Testimonials";
+import FAQ          from "@/components/landing-page/FAQ";
+import Contact      from "@/components/landing-page/Contact";
+import Footer       from "@/components/landing-page/Footer";
 
 export default function Home() {
   return (
