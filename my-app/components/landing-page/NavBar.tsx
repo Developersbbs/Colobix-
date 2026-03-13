@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 const navLinks = ["Features", "Products", "Pricing", "Clients", "FAQ"];
@@ -13,6 +14,8 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -275,7 +278,13 @@ export default function Navbar() {
 
           {/* ── Desktop CTA (≥768px) ── */}
           {!isMobile && (
-            <a href="#contact" className="cta-btn" onClick={handleRipple} style={{ flexShrink: 0 }}>
+            <a href="#contact" className="cta-btn"
+             onClick={(e) => {
+      handleRipple(e);
+      router.push("/login");
+    }} 
+    style={{ flexShrink: 0 }}
+            >
               {ripples.map((rp) => (
                 <span key={rp.id} className="ripple" style={{ left: rp.x, top: rp.y }} />
               ))}
@@ -342,7 +351,10 @@ export default function Navbar() {
             {isMobile && (
               <a
                 href="#contact"
-                onClick={() => setMobileOpen(false)}
+                onClick={(e) => {
+      setMobileOpen(false)
+      router.push("/login");
+    }}
                 style={{
                   display: "block",
                   marginTop: 14,
